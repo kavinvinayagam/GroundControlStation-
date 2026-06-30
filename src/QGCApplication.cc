@@ -17,7 +17,8 @@
  */
 
 #include "QGCApplication.h"
-
+#include "auth/authmanager.h"
+#include "API/UserService.h"
 #include <QtCore/QEvent>
 #include <QtCore/QFile>
 #include <QtCore/QMetaMethod>
@@ -79,6 +80,7 @@
 #ifndef QGC_NO_SERIAL_LINK
 #include "FirmwareUpgradeController.h"
 #include "SerialLink.h"
+#include "Weather/WeatherManager.h"
 #endif
 
 #ifdef Q_OS_LINUX
@@ -264,7 +266,16 @@ QGCApplication::~QGCApplication()
 }
 
 void QGCApplication::init()
-{
+{   static AuthManager authManager;
+    static UserService userService;
+    static WeatherManager weatherManager;
+
+
+    qmlRegisterSingletonInstance("QGC.Auth",1,0,"AuthManager",&authManager);
+
+    qmlRegisterSingletonInstance("QGC.Auth",1,0,"UserService",&userService);
+    qmlRegisterSingletonInstance("QGC.Weather",1,0,"WeatherManager",&weatherManager);
+
     SettingsManager::instance()->init();
 
     LinkManager::registerQmlTypes();

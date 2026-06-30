@@ -24,6 +24,8 @@
 #include <QtCore/QMetaType>
 #include <QtCore/QSettings>
 #include <QtCore/QStandardPaths>
+#include <QProcess>
+#include "../Cloud/clouduploader.h"
 
 QGC_LOGGING_CATEGORY(MAVLinkProtocolLog, "qgc.comms.mavlinkprotocol")
 
@@ -349,8 +351,8 @@ void MAVLinkProtocol::_stopLogging()
     if (_tempLogFile->isOpen() && _closeLogFile()) {
         auto appSettings = SettingsManager::instance()->appSettings();
         auto mavlinkSettings = SettingsManager::instance()->mavlinkSettings();
-        if ((_vehicleWasArmed || mavlinkSettings->telemetrySaveNotArmed()->rawValue().toBool()) && 
-                mavlinkSettings->telemetrySave()->rawValue().toBool() && 
+        if ((_vehicleWasArmed || mavlinkSettings->telemetrySaveNotArmed()->rawValue().toBool()) &&
+                mavlinkSettings->telemetrySave()->rawValue().toBool() &&
                 !appSettings->disableAllPersistence()->rawValue().toBool()) {
             _saveTelemetryLog(_tempLogFile->fileName());
         } else {
@@ -395,7 +397,10 @@ void MAVLinkProtocol::deleteTempLogFiles()
 }
 
 void MAVLinkProtocol::_saveTelemetryLog(const QString &tempLogfile)
-{
+{   qDebug() << "========== _saveTelemetryLog CALLED ==========";
+    qDebug() << "Temp Log:" << tempLogfile;
+
+
     if (_checkTelemetrySavePath()) {
         const QString saveDirPath = SettingsManager::instance()->appSettings()->telemetrySavePath();
         const QDir saveDir(saveDirPath);
@@ -415,6 +420,14 @@ void MAVLinkProtocol::_saveTelemetryLog(const QString &tempLogfile)
             const QString error = tr("Unable to save telemetry log. Error copying telemetry to '%1': '%2'.").arg(saveFilePath, tempFile.errorString());
             qgcApp()->showAppMessage(error);
         }
+
+        else {
+            qDebug() << "Telemetry log saved";
+            qDebug() << "Uploading:" << saveFilePath;
+            CloudUploader::upload(saveFilePath);
+
+        }
+
     }
 
     (void) QFile::remove(tempLogfile);
@@ -436,6 +449,7 @@ bool MAVLinkProtocol::_checkTelemetrySavePath()
         return false;
     }
 
+
     return true;
 }
 
@@ -446,7 +460,7 @@ void MAVLinkProtocol::_vehicleCountChanged()
     }
 }
 
-int MAVLinkProtocol::getSystemId() const 
-{ 
-    return SettingsManager::instance()->mavlinkSettings()->gcsMavlinkSystemID()->rawValue().toInt(); 
+int MAVLinkProtocol::getSystemId() const
+{
+    return SettingsManager::instance()->mavlinkSettings()->gcsMavlinkSystemID()->rawValue().toInt();
 }

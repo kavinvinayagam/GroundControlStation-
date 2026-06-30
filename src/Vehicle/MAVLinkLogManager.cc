@@ -21,6 +21,7 @@
 #include <QtNetwork/QNetworkProxy>
 #include <QtNetwork/QNetworkReply>
 #include <QtQml/QQmlEngine>
+#include "../Cloud/clouduploader.h"
 
 QGC_LOGGING_CATEGORY(MAVLinkLogManagerLog, "qgc.vehicle.mavlinklogmanager")
 
@@ -626,6 +627,7 @@ void MAVLinkLogManager::stopLogging()
     _logProcessor->close();
     if (_logProcessor->record()) {
         _logProcessor->record()->setWriting(false);
+
         if (_enableAutoUpload) {
             _logProcessor->record()->setSelected(true);
             if (!uploading()) {

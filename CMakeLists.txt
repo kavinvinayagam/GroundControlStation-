@@ -514,6 +514,12 @@ qt_add_qml_module(${CMAKE_PROJECT_NAME}
     VERSION 1.0
     RESOURCE_PREFIX /qml
     NO_PLUGIN
+    SOURCES src/auth/authmanager.h src/auth/authmanager.cpp
+    SOURCES src/auth/apiclient.h src/auth/apiclient.cpp
+    SOURCES src/API/userservice.h src/API/userservice.cpp
+    SOURCES src/Weather/WeatherManager.h
+    SOURCES src/Weather/WeatherManager.cpp
+    SOURCES src/Cloud/clouduploader.h src/Cloud/clouduploader.cpp
 )
 
 add_subdirectory(src)

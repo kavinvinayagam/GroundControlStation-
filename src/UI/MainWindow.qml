@@ -20,7 +20,7 @@ import QGroundControl.FactControls
 import QGroundControl.ScreenTools
 import QGroundControl.FlightDisplay
 import QGroundControl.FlightMap
-
+import QGC.Auth 1.0
 import QGroundControl.UTMSP
 
 /// @brief Native QML top level window
@@ -803,4 +803,53 @@ ApplicationWindow {
          flightID:                   UTMSPStateStorage.flightID
          anchors.fill:               parent
     }
+    Loader {
+        id: loginLoader
+
+        anchors.fill: parent
+
+        active: !AuthManager.loggedIn
+
+        source: "Login/LoginPage.qml"
+
+        z: 999999
+    }
+
+
+
+    Loader {
+        id: dashboardLoader
+
+        anchors.fill: parent
+
+        active: AuthManager.loggedIn
+
+        source: AuthManager.role === "admin"
+                ? "Dashboard/AdminDashboard.qml"
+                : "Dashboard/OperatorDashboard.qml"
+
+        onLoaded:{
+        if(item && item.openGroundControl)
+        {
+        item.openGroundControl.connect(
+            function()
+            {
+              dashboardLoader.visible = false
+            }
+
+            )
+
+
+        }
+
+        }
+
+        z: 999998
+    }
+
+
+
+
+
+
 }

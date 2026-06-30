@@ -9,5 +9,14 @@ qt_add_qml_module(MainWindowModule
     RESOURCE_PREFIX /qml
     QML_FILES
         MainWindow.qml
+        Login/LoginPage.qml
     NO_PLUGIN
+    QML_FILES Dashboard/AdminDashboard.qml
+    QML_FILES Dashboard/operatorDashboard.qml
+    QML_FILES Users/CreateUserDialog.qml
+    QML_FILES Users/UserTable.qml
+    QML_FILES GroundControl/GroundControlPage.qml
+    QML_FILES UserManagement.qml
+    QML_FILES Users/UserManagementPage.qml
+    QML_FILES Users/CreateUserPage.qml
 )

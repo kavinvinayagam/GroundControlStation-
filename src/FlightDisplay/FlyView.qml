@@ -146,6 +146,18 @@ Item {
             visible:            !QGroundControl.videoManager.fullScreen
         }
 
+        WeatherWidget {
+            id: weatherWidget
+
+            anchors.top: parent.top
+            anchors.right: parent.right
+
+            anchors.topMargin: 80
+            anchors.rightMargin: 20
+
+            z: QGroundControl.zOrderTopMost
+        }
+
         // Development tool for visualizing the insets for a paticular layer, show if needed
         FlyViewInsetViewer {
             id:                     widgetLayerInsetViewer
